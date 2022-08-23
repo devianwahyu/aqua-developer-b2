@@ -1,6 +1,6 @@
 # **Aqua Developer Batch 2 Day 02**
 
-Tanggal: 23 Agustus 2023
+Tanggal: 23 Agustus 2022
 
 Materi: Version Control (GIT)
 
