@@ -97,13 +97,23 @@ func updateCustomer(c echo.Context) error {
 		})
 	}
 
+	message := ""
 	for i, value := range customers {
 		if value.ID == id {
 			customers[i] = *newUser
+			break
 		}
+		message = "error"
 	}
 
-	log.Println("SUccess to update customer with id: " + id)
+	if message != "" {
+		log.Println("Failed to update customer with id: " + id)
+		return c.JSON(http.StatusNotFound, model.Error{
+			Message: "Not found customer with id: " + id,
+		})
+	}
+
+	log.Println("Success to update customer with id: " + id)
 	return c.JSON(http.StatusOK, newUser)
 }
 
@@ -116,6 +126,7 @@ func deleteCustomer(c echo.Context) error {
 			customers = append(customers[:i], customers[i+1:]...)
 			break
 		}
+		message = "error"
 	}
 
 	if message != "" {
