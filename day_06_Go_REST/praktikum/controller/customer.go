@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/devianwahyu/go_rest/model"
@@ -30,6 +31,7 @@ func UseSubroute(group *echo.Group) {
 
 func getCustomers(c echo.Context) error {
 	customerList := customers
+	log.Println("Success to get list of customers")
 	return c.JSON(http.StatusOK, customerList)
 }
 
@@ -44,17 +46,20 @@ func getCustomerByID(c echo.Context) error {
 	}
 
 	if customer.ID == "" {
+		log.Println("Failed to get customer with id: " + id)
 		return c.JSON(http.StatusNotFound, model.Error{
 			Message: "Not found customer with id: " + id,
 		})
 	}
 
+	log.Println("Success to get customer with id: " + id)
 	return c.JSON(http.StatusOK, customer)
 }
 
 func addCustomer(c echo.Context) error {
 	newUser := new(model.Customer)
 	if err := c.Bind(newUser); err != nil {
+		log.Println("Failed to add new customer")
 		return c.JSON(http.StatusBadRequest, model.Error{
 			Message: "Failed to add new user",
 		})
@@ -69,6 +74,7 @@ func addCustomer(c echo.Context) error {
 	}
 
 	if idUsed {
+		log.Println("Failed to add new customer with id: " + newUser.ID)
 		return c.JSON(http.StatusConflict, model.Error{
 			Message: "User with id " + newUser.ID + " already exist",
 		})
@@ -76,6 +82,7 @@ func addCustomer(c echo.Context) error {
 
 	customers = append(customers, *newUser)
 
+	log.Println("Success to add new customer with id: " + newUser.ID)
 	return c.JSON(http.StatusOK, customers)
 }
 
@@ -84,6 +91,7 @@ func updateCustomer(c echo.Context) error {
 
 	newUser := new(model.Customer)
 	if err := c.Bind(newUser); err != nil {
+		log.Println("Failed to update customer with id: " + id)
 		return c.JSON(http.StatusBadRequest, model.Error{
 			Message: "Failed to update user id: " + id,
 		})
@@ -95,6 +103,7 @@ func updateCustomer(c echo.Context) error {
 		}
 	}
 
+	log.Println("SUccess to update customer with id: " + id)
 	return c.JSON(http.StatusOK, newUser)
 }
 
@@ -110,11 +119,13 @@ func deleteCustomer(c echo.Context) error {
 	}
 
 	if message != "" {
-		c.JSON(http.StatusNotFound, model.Error{
+		log.Println("Failed to delete customer with id: " + id)
+		return c.JSON(http.StatusNotFound, model.Error{
 			Message: "Not found customer with id: " + id,
 		})
 	}
 
+	log.Println("Success to delete customer with id: " + id)
 	return c.JSON(http.StatusOK, model.Success{
 		Message: "Customer with id " + id + " deleted",
 	})
