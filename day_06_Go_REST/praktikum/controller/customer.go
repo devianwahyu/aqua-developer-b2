@@ -83,14 +83,14 @@ func addCustomer(c echo.Context) error {
 	customers = append(customers, *newUser)
 
 	log.Println("Success to add new customer with id: " + newUser.ID)
-	return c.JSON(http.StatusOK, customers)
+	return c.JSON(http.StatusCreated, customers)
 }
 
 func updateCustomer(c echo.Context) error {
 	id := c.Param("id")
 
-	newUser := new(model.Customer)
-	if err := c.Bind(newUser); err != nil {
+	newDataUser := new(model.Customer)
+	if err := c.Bind(newDataUser); err != nil {
 		log.Println("Failed to update customer with id: " + id)
 		return c.JSON(http.StatusBadRequest, model.Error{
 			Message: "Failed to update user id: " + id,
@@ -100,7 +100,7 @@ func updateCustomer(c echo.Context) error {
 	message := ""
 	for i, value := range customers {
 		if value.ID == id {
-			customers[i] = *newUser
+			customers[i] = *newDataUser
 			break
 		}
 		message = "error"
@@ -114,7 +114,7 @@ func updateCustomer(c echo.Context) error {
 	}
 
 	log.Println("Success to update customer with id: " + id)
-	return c.JSON(http.StatusOK, newUser)
+	return c.JSON(http.StatusOK, newDataUser)
 }
 
 func deleteCustomer(c echo.Context) error {
